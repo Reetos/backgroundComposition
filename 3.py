@@ -20,9 +20,13 @@ def create_mask(frame):
     upper_green = np.array([70, 255, 255])
     # Create a mask that extracts the green screen
     mask = cv2.inRange(hsv, lower_green, upper_green)
-    # Convert the mask to RGB color space
-    mask_rgb = cv2.cvtColor(mask, cv2.COLOR_GRAY2RGB)
-    return mask_rgb
+    mask_inv = cv2.bitwise_not(mask)
+
+    bg = cv2.bitwise_and(frame, frame, mask=mask)
+    fg = cv2.bitwise_and(frame, frame, mask=mask_inv)
+
+    cv2.imshow("bg", bg)
+    cv2.imshow("fg", fg)
 
 mask = video.fl_image(create_mask)
 
